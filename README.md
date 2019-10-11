@@ -24,6 +24,7 @@ data(OtherReturns)
 data(StockPriceReturns)
 data(SplitDates)
 es.mm <- eventstudy(firm.returns = StockPriceReturns,
+# This is where the new argument is being used.
  estimation.period = c(-300,-10),
  event.list = SplitDates,
  event.window = 5,
@@ -38,6 +39,7 @@ es.mm <- eventstudy(firm.returns = StockPriceReturns,
 plot(es.mm)
 
 es.mm1 <- eventstudy(firm.returns = StockPriceReturns,
+# New argument being used.
  estimation.period = c(-30,-10),
  event.list = SplitDates,
  event.window = 5,
