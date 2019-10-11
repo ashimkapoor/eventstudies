@@ -1,4 +1,5 @@
 eventstudy <- function(firm.returns,
+                       estimation.period,
                        event.list,
                        event.window = 10,
                        is.levels =  FALSE,
@@ -35,6 +36,7 @@ eventstudy <- function(firm.returns,
   
   ## compute estimation and event period
   ## event period starts from event time + 1
+  estimation.period <- as.character(estimation.period)
   event.period <- as.character((-event.window + 1):event.window)
 
 ### Run models
@@ -44,7 +46,8 @@ eventstudy <- function(firm.returns,
     if (length(dim(model.args$market.returns)) == 2) {
       colnames(model.args$market.returns) <- "market.returns" # needed to fix market returns colname
     }
-    returns.zoo <- prepare.returns(event.list = event.list,
+    returns.zoo <- prepare.returns(estimation.period=estimation.period,
+                                   event.list = event.list,
                                    event.window = event.window,
                                    list(firm.returns = firm.returns,
                                         market.returns = model.args$market.returns,
@@ -129,7 +132,8 @@ eventstudy <- function(firm.returns,
     if (length(dim(model.args$market.returns)) == 2) {
       colnames(model.args$market.returns) <- "market.returns" # needed to fix market returns colname
     }
-    returns.zoo <- prepare.returns(event.list = event.list,
+    returns.zoo <- prepare.returns(estimation.period = estimation.period,
+                                   event.list = event.list,
                                    event.window = event.window,
                                    list(firm.returns = firm.returns,
                                         market.returns = model.args$market.returns))
@@ -185,7 +189,8 @@ eventstudy <- function(firm.returns,
       if (length(dim(model.args$market.returns)) == 2) {
           colnames(model.args$market.returns) <- "market.returns" # needed to fix market returns colname
       }
-      returns.zoo <- prepare.returns(event.list = event.list,
+      returns.zoo <- prepare.returns(estimation.period = estimation.period,
+                                     event.list = event.list,
                                      event.window = event.window,
                                      list(firm.returns = firm.returns,
                                           market.returns = model.args$market.returns))
@@ -236,7 +241,8 @@ eventstudy <- function(firm.returns,
 
 ### constantMeanReturn
   if (type == "constantMeanReturn") {
-      returns.zoo <- prepare.returns(event.list = event.list,
+      returns.zoo <- prepare.returns(estimation.period = estimation.period,
+                                     event.list = event.list,
                                      event.window = event.window,
                                      list(firm.returns = firm.returns))
       outcomes <- do.call(c, sapply(returns.zoo, '[', "outcomes"))
@@ -277,7 +283,8 @@ eventstudy <- function(firm.returns,
 
 ### None
   if (type == "None") {
-    returns.zoo <- prepare.returns(event.list = event.list,
+    returns.zoo <- prepare.returns(estimation.period = estimation.period,
+                                   event.list = event.list,
                                    event.window = event.window,
                                    list(firm.returns = firm.returns))
     outcomes <- do.call(c, sapply(returns.zoo, '[', "outcomes"))
@@ -401,7 +408,7 @@ eventstudy <- function(firm.returns,
 ## 2. firm.returns.eventtime: data.frame
 ## 3. outcomes: vector
 ## 4. estimation.period: vector
-prepare.returns <- function(event.list, event.window, ...) {
+prepare.returns <- function(estimation.period, event.list, event.window, ...) {
     returns <- unlist(list(...), recursive = FALSE)
     other.returns.names <- names(returns)[-match("firm.returns", names(returns))]
     
@@ -453,9 +460,7 @@ prepare.returns <- function(event.list, event.window, ...) {
       
      colnames(firm.returns.eventtime$z.e) <- c("firm.returns", other.returns.names)
       ## :DOC: estimation period goes till event time (inclusive)
-      attr(firm.returns.eventtime, which = "estimation.period") <-
-        as.character(index(firm.returns.eventtime$z.e)[1]:(-event.window))
-      
+      attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
       return(firm.returns.eventtime)
   })
         names(returns.zoo) <- 1:nrow(event.list)
@@ -478,8 +483,8 @@ prepare.returns <- function(event.list, event.window, ...) {
         return(list(z.e = NULL, outcomes = "wrongspan"))
     }
       firm.returns.eventtime$outcomes <- "success" 
-      attr(firm.returns.eventtime, which = "estimation.period") <-
-          as.character(index(firm.returns.eventtime$z.e)[1]:(-event.window))
+      attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
+     
       return(firm.returns.eventtime)
   })
       names(returns.zoo) <- 1:nrow(event.list)

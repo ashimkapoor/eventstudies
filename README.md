@@ -1,68 +1,64 @@
 # eventstudies
 
-[![Build Status](https://travis-ci.org/nipfpmf/eventstudies.svg?branch=master)](https://travis-ci.org/nipfpmf/eventstudies)
-
 An R package for conducting event studies and a platform for
-methodological research on event studies.
+methodological research on event studies. 
 
 ## Installation
 
 ### Stable version
 **Release notes**: https://github.com/nipfpmf/eventstudies/releases/tag/v1.2
 ```R
-install.packages("eventstudies")
-## OR
-devtools::install_github("nipfpmf/eventstudies", ref="v1.2")
+devtools::install_github("nipfpmf/eventstudies", ref="master")
 ```
 
-### Latest version
+### Latest version which has an argument for the estimation period
 ```R
-devtools::install_github("nipfpmf/eventstudies", ref="master")
+devtools::install_github("ashimkapoor/eventstudies", ref="setting-estimation-period")
 ```
 
 ## Usage
 
 ```R
-data("SplitDates", package = "eventstudies")
-data("StockPriceReturns", package = "eventstudies")
-data("OtherReturns", package = "eventstudies")
+library(eventstudies)
+data(OtherReturns)
+data(StockPriceReturns)
+data(SplitDates)
+es.mm <- eventstudy(firm.returns = StockPriceReturns,
+ estimation.period = c(-300,-10),
+ event.list = SplitDates,
+ event.window = 5,
+ type = "marketModel",
+ to.remap = TRUE,
+ remap = "cumsum",
+ inference = TRUE,
+ inference.strategy = "bootstrap",
+ model.args = list(market.returns=OtherReturns$NiftyIndex)
+ )
 
-es <- eventstudies::eventstudy(firm.returns = StockPriceReturns,
-         event.list = SplitDates,
-         event.window = 7,
-         type = "marketModel",
-         to.remap = TRUE,
-         remap = "cumsum",
-         inference = TRUE,
-         inference.strategy = "bootstrap",
-         model.args = list(
-             market.returns = OtherReturns[, "NiftyIndex"]
-             )
-         )
-plot(es)
+plot(es.mm)
+
+es.mm1 <- eventstudy(firm.returns = StockPriceReturns,
+ estimation.period = c(-30,-10),
+ event.list = SplitDates,
+ event.window = 5,
+ type = "marketModel",
+ to.remap = TRUE,
+ remap = "cumsum",
+ inference = TRUE,
+ inference.strategy = "bootstrap",
+ model.args = list(market.returns=OtherReturns$NiftyIndex)
+ )
+
+plot(es.mm1)
 ```
 
 ## Help
 ```R
 ?eventstudy
-vignette("eventstudies", package = "eventstudies")
-examples("eventstudy", package = "eventstudies")
 ```
 
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request
-
-## History
-
-This repository was moved from R-forge before the release of v1.2:
-
-<https://r-forge.r-project.org/projects/eventstudies>
 
 ## License
 
 GPL-2
+

@@ -13,6 +13,7 @@
 
 \usage{
 eventstudy(firm.returns,
+           estimation.period,
            event.list,
            event.window = 10,
            is.levels =  FALSE,
@@ -29,6 +30,11 @@ eventstudy(firm.returns,
     a \pkg{zoo} matrix of \sQuote{outcome} or \sQuote{response} series. 
   }
 
+  \item{estimation.period}{
+    a vector of length 2. For example, c(-300,-20) would represent an
+    estimation period starting 300 time units prior to the event
+    and ending 20 time units prior to the event.
+  }
   \item{event.list}{
     a \code{data.frame} of two columns with event dates (colname:
     \dQuote{when}) and column names of the \sQuote{response}
