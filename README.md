@@ -23,7 +23,7 @@ library(eventstudies)
 data(OtherReturns)
 data(StockPriceReturns)
 data(SplitDates)
-es.mm <- eventstudy(firm.returns = StockPriceReturns,
+es.mm1 <- eventstudy(firm.returns = StockPriceReturns,
 # This is where the new argument is being used.
  estimation.period = c(-300,-10),
  event.list = SplitDates,
@@ -36,9 +36,9 @@ es.mm <- eventstudy(firm.returns = StockPriceReturns,
  model.args = list(market.returns=OtherReturns$NiftyIndex)
  )
 
-plot(es.mm)
+plot(es.mm1)
 
-es.mm1 <- eventstudy(firm.returns = StockPriceReturns,
+es.mm2 <- eventstudy(firm.returns = StockPriceReturns,
 # New argument being used.
  estimation.period = c(-30,-10),
  event.list = SplitDates,
@@ -51,7 +51,23 @@ es.mm1 <- eventstudy(firm.returns = StockPriceReturns,
  model.args = list(market.returns=OtherReturns$NiftyIndex)
  )
 
-plot(es.mm1)
+plot(es.mm2)
+
+es.mm3 <- eventstudy(firm.returns = StockPriceReturns,
+# Note : estimation period is missing, the default estimation period
+# will be from starting of the data till -event.window+1
+ event.list = SplitDates,
+ event.window = 5,
+ type = "marketModel",
+ to.remap = TRUE,
+ remap = "cumsum",
+ inference = TRUE,
+ inference.strategy = "bootstrap",
+ model.args = list(market.returns=OtherReturns$NiftyIndex)
+ )
+
+plot(es.mm3)
+
 ```
 
 ## Help
