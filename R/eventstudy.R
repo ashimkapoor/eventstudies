@@ -1,5 +1,5 @@
 eventstudy <- function(firm.returns,
-                       estimation.period,
+                       estimation.period=NULL,
                        event.list,
                        event.window = 10,
                        is.levels =  FALSE,
@@ -459,8 +459,12 @@ prepare.returns <- function(estimation.period, event.list, event.window, ...) {
      firm.returns.eventtime$outcomes <- "success" # keep one value
       
      colnames(firm.returns.eventtime$z.e) <- c("firm.returns", other.returns.names)
-      ## :DOC: estimation period goes till event time (inclusive)
-      attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
+      ## :DOC: The default estimation period goes till event time (inclusive)
+      if(length(estimation.period)==0) {
+         attr(firm.returns.eventtime, which = "estimation.period") <- as.character(index(firm.returns.eventtime$z.e)[1]:(-event.window))
+      } else {                                  
+         attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
+      }
       return(firm.returns.eventtime)
   })
         names(returns.zoo) <- 1:nrow(event.list)
@@ -483,8 +487,13 @@ prepare.returns <- function(estimation.period, event.list, event.window, ...) {
         return(list(z.e = NULL, outcomes = "wrongspan"))
     }
       firm.returns.eventtime$outcomes <- "success" 
-      attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
-     
+  
+      if(length(estimation.period)==0) {
+         attr(firm.returns.eventtime, which = "estimation.period") <- as.character(index(firm.returns.eventtime$z.e)[1]:(-event.window))
+      } else {                                  
+         attr(firm.returns.eventtime, which = "estimation.period") <- estimation.period
+      }
+          
       return(firm.returns.eventtime)
   })
       names(returns.zoo) <- 1:nrow(event.list)
